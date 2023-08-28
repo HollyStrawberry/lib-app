@@ -8,7 +8,7 @@
             <div class="row mb-3">
                 <label for="title" class="col-md-4 col-form-label text-md-end">{{ __('Название') }}</label>
                 <div class="col-md-6">
-                    <input id="title" type="text" class="form-control" name="title" autocomplete="title" autofocus>
+                    <input id="title" type="text" class="form-control" name="title" value="{{ $book->title }}" autocomplete="title" autofocus>
                 </div>
             </div>
 
@@ -29,14 +29,14 @@
                 <label for="genre" class="col-md-4 col-form-label text-md-end">{{ __('Жанры') }}</label>
 
                 <div class="col-md-6">
-                    <input id="genre" type="text" class="form-control" name="genre" placeholder="Через запятую">
+                    <input id="genre" type="text" class="form-control" name="genre" value="{{ $genres }}" placeholder="Через запятую">
                 </div>
             </div>
 
             <div class="row mb-0">
                 <div class="col-md-8 offset-md-4">
                     <button type="submit" class="btn btn-primary">
-                        {{ __('Добавить') }}
+                        {{ __('Обновить') }}
                     </button>
 
                     <button type="submit" class="btn btn-primary" formaction="{{ route('book.index') }}">

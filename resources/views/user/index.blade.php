@@ -1,15 +1,18 @@
-@extends('layouts.main')
+@extends('layouts.app')
 @section('content')
-        <div>
-            <h1>Users</h1>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
             @foreach($users as $user)
-                <p> ID: {{ $user->id }}
-                <p> User: {{ $user->name }}
-                <p> Password: {{ $user->password }}
-                <p> Books: {{ $books_counts[$user->id - 1] }}
+                    <div class="card">
+                        <div class="card-header">{{ $user->name }}</div>
+                        <div class="card-body">
+                            Книги: {{ array_pop($books_counts) }}
+                        </div>
+                    </div>
             @endforeach
-        </div>
-        <div>
-            <a href="{{ route('user.create') }}">Добавить автора</a>
+                    <a href="{{ route('user.create') }}">Добавить автора</a>
+                </div>
+            </div>
         </div>
 @endsection

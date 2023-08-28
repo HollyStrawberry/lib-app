@@ -21,9 +21,10 @@ class UserController extends Controller
         $books_counts = [];
 
         foreach ($users as $user) {
-            $books_counts[] += Book::where('user_id',$user->id)->count();
+            $books_counts[] = Book::where('user_id', $user->id)->count();
         }
 
+        $books_counts = array_reverse($books_counts);
         return view('user.index', compact('users'), compact('books_counts'));
     }
     public function create() {

@@ -17,6 +17,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        dump('Pizda');
         return view('auth.login');
     }
 
