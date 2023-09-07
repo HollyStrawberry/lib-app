@@ -14,7 +14,18 @@ class BookRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        switch ($this->getMethod())
+        {
+            case 'GET':
+                return true;
+            case 'POST':
+            case 'PUT':
+            case 'PATCH':
+            case 'DELETE':
+                return auth()->check();
+            default:
+                return false;
+        }
     }
 
     /**
@@ -26,15 +37,17 @@ class BookRequest extends FormRequest
     {
         $rules = [
             'title' => 'required|string|unique:books,title',
-            'type' => 'required|in:graphical,digital,printed',
+            'pub_type' => 'required|in:graphical,digital,printed',
         ];
 
         //Обрабатываем правила валидации для методов
         switch ($this->getMethod())
         {
-            //case 'POST':
+            case 'POST':
+                return ['genre' => 'required|string'] + $rules;
             case 'PUT':
                 return [
+                        'genre' => 'required|string',
                         'book_id' => 'required|integer|exists:books,id', //должен существовать
                         'title' => [
                             'required',
@@ -57,6 +70,7 @@ class BookRequest extends FormRequest
             'title.required' => 'Введите название книги',
             'title.exists' => 'Книга с таким названием уже существет',
         ];
+
     }
 
 }

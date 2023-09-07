@@ -12,7 +12,7 @@ class Book extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'type'];
+    protected $fillable = ['title', 'pub_type','user_id'];
 
     protected $hidden = ['created_at', 'updated_at'];
 

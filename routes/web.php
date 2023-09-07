@@ -26,10 +26,10 @@ Route::get('/', function () {
 //Routing of books
 Route::get('/books',[BookController::class, 'index'])->name('book.index');
 Route::get('/books/create',[BookController::class, 'create'])->name('book.create');
-Route::post('/books/update',[BookController::class, 'storeUpdates'])->name('book.storeUpdates');
-Route::post('/books',[BookController::class, 'store'])->name('book.store');
-Route::get('/books/update',[BookController::class, 'update'])->name('book.update');
-Route::get('/books/delete',[BookController::class, 'destroy'])->name('book.delete');
+Route::get('/books/edit',[BookController::class, 'edit'])->name('book.edit');
+Route::post('/books',[BookController::class,'store'])->name('book.store');
+Route::put('/books/{book}',[BookController::class, 'update'])->name('book.update');
+Route::delete('/books/{book}',[BookController::class, 'destroy'])->name('book.delete');
 
 //Routing users
 Route::get('/users',[UserController::class, 'index'])->name('user.index');

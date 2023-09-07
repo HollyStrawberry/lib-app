@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookRequest;
 use App\Models\Book;
-use App\Models\BookGenreRelations;
 use App\Models\Genre;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
 class BookController extends Controller
@@ -51,22 +49,15 @@ class BookController extends Controller
         return view('book.create');
     }
 
-    public function update(Request $request) {
+    public function edit(Request $request) {
 
         $book = Book::find($request->id);
-        $genres = '';
 
-        $relations = BookGenreRelations::where('book_id',$book->id)->get();
-        foreach ($relations as $relation)
-            $genres .= Genre::find($relation->genre_id)->name . ', ';
-
-        return view('book.update',compact('book'),compact('genres'));
+        return view('book.update',compact('book'));
 
     }
 
-    public function destroy(Request $request) {
-
-        $book = Book::find($request->id);
+    public function destroy(Book $book) {
 
         Log::info('Deleting book with id: '.$book->id.' and title '.$book->title);
         $book->delete();
@@ -74,7 +65,8 @@ class BookController extends Controller
         return redirect()->route('book.index');
     }
 
-    public function store(Request $request) {
+    public function store(BookRequest $request) {
+
         if ($request->validated()) {
 
             try {
@@ -83,24 +75,23 @@ class BookController extends Controller
                     'pub_type' => $request->pub_type,
                     'user_id' => auth()->id(),
                 ]);
-
-                GenreController::setBookGenres($book->id, $request->genre);
+                GenreController::setBookGenres($book, $request->genre);
 
                 Log::info('Created book with id: '.$book->id.' and title '.$book->title);
             } catch (Throwable $e) {
                 report($e);
+                dd($e);
             }
-            return redirect()->route('book.index');
+            return redirect('/books');
         } else {
             return redirect()->route('book.create');
         }
     }
 
-    public function storeUpdates(Request $request) {
+    public function update(BookRequest $request,Book $book) {
         if ($request->validated()) {
 
             try {
-                $book = Book::find($request->id);
                 Log::info('Updating books data with id: '.$book->id.' and title '.$book->title);
                 $book->update([
                     'title' => $request->title,
@@ -108,7 +99,7 @@ class BookController extends Controller
                 ]);
 
 
-                GenreController::updateBookGenres($book->id, $request->genre);
+                GenreController::updateBookGenres($book, $request->genre);
                 Log::info('Updated book with id: '.$book->id.' and title '.$book->title);
             } catch (Throwable $e) {
                 report($e);

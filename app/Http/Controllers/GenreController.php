@@ -84,7 +84,7 @@ class GenreController extends Controller
         return $genres_string;
     }
 
-    public static function setBookGenres(Int $book_id, string $genres_str) {
+    public static function setBookGenres(Book $book, string $genres_str) {
         $genres = explode(',',
             preg_replace('/\s+/', '', $genres_str));
 
@@ -92,24 +92,21 @@ class GenreController extends Controller
             $genre = Genre::firstWhere('name', $genre_str);
 
             if ($genre == null) {
-                $genre = Genre::create([
-                    'name' => $genre_str,
-                ]);
+                $genre = Genre::create(['name' => $genre_str]);
             }
 
-            BookGenreRelations::create([
-                'book_id' => $book_id,
-                'genre_id' => $genre->id,
-            ]);
+            $book->genres()->save($genre);
         }
     }
 
-    public static function updateBookGenres(Int $book_id, string $new_genres_str) {
-        $relations = BookGenreRelations::where('book_id',$book_id)->get();
-        foreach ($relations as $relation)
-            $relation->delete();
-
-        self::setBookGenres($book_id,$new_genres_str);
+    public static function updateBookGenres(Book $book, string $new_genres_str) {
+        $book->genres()->detach();
+/*
+        foreach ($book->genres()->get() as $genre) {
+            $genre->delete();
+        }
+*/
+        self::setBookGenres($book,$new_genres_str);
     }
 
 }

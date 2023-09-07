@@ -41,9 +41,13 @@
                 <p>Дата: {{ $book->created_at }}
                 @auth()
                     @if(auth()->id() == $book->user_id)
-                <form method="GET" id="edit_delete" align="right">
-                    <button id="button_update" type="submit" name="id" value="{{ $book->id }}" formaction="{{ route('book.update') }}">Редактировать</button>
-                    <button id="button_delete" type="submit" name="id" value="{{ $book->id }}" formaction="{{ route('book.delete') }}">Удалить</button>
+                <form method="GET" id="edit" action="{{ route('book.edit') }}" align="right">
+                    <button id="button_update" type="submit" name="id" value="{{ $book->id }}">Редактировать</button>
+                </form>
+                <form method="POST" id="delete" align="right" action="{{ route('book.delete', ['book' => $book]) }}">
+                    @method('DELETE')
+                    @csrf
+                    <button id="button_delete" type="submit" name="delete" value="{{ $book->id }}">Удалить</button>
                 </form>
                     @endif
                 @endauth
