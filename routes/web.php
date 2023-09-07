@@ -19,35 +19,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', function () {
+    return redirect()->route('book.index');
+});
 
 //Routing of books
 Route::get('/books',[BookController::class, 'index'])->name('book.index');
 Route::get('/books/create',[BookController::class, 'create'])->name('book.create');
+Route::post('/books/update',[BookController::class, 'storeUpdates'])->name('book.storeUpdates');
 Route::post('/books',[BookController::class, 'store'])->name('book.store');
 Route::get('/books/update',[BookController::class, 'update'])->name('book.update');
-Route::get('/books/delete',[BookController::class, 'delete'])->name('book.delete');
+Route::get('/books/delete',[BookController::class, 'destroy'])->name('book.delete');
 
 //Routing users
 Route::get('/users',[UserController::class, 'index'])->name('user.index');
 Route::get('/users/create',[UserController::class, 'create'])->name('user.create');
+Route::get('/users/update',[UserController::class, 'update'])->name('user.update');
+Route::post('/users/update',[UserController::class, 'storeUpdates'])->name('user.storeUpdates');
 Route::post('/users',[UserController::class, 'store'])->name('user.store');
 
 //Routing genres
 Route::get('/genres',[GenreController::class,'index'])->name('genre.index');
 Route::get('/genres/create',[GenreController::class,'create'])->name('genre.create');
+Route::get('/genres/update',[GenreController::class,'update'])->name('genre.update');
+Route::get('/genres/delete',[GenreController::class,'delete'])->name('genre.delete');
 Route::post('/genres',[GenreController::class,'store'])->name('genre.store');
-
-//Dashboard
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 require __DIR__.'/auth.php';
 

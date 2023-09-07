@@ -32,17 +32,39 @@ class GenreController extends Controller
 
         return view('genre.create');
     }
+    public function update(Request $request) {
+
+        $genre = Genre::find($request->id);
+
+        return view('genre.update', compact('genre'));
+    }
+    public function delete(Request $request) {
+
+        $genre = Genre::find($request->id);
+
+        $genre->delete();
+
+        return redirect()->route('genre.index');
+    }
 
     public function store(Request $request) {
         if ($this->validate($request, $this->rules)) {
 
-            $genre = Genre::create([
-                'name' => $request->name,
-            ]);
+
+            if ($request->id == null) {
+                $genre = Genre::create([
+                    'name' => $request->name,
+                ]);
+            } else {
+                $genre = Genre::find($request->id);
+                $genre->update([
+                    'name' => $request->name,
+                ]);
+            }
 
             return redirect()->route('genre.index');
         } else {
-            return redirect()->route('genre.create');
+            return null;
         }
     }
 
@@ -84,7 +106,8 @@ class GenreController extends Controller
 
     public static function updateBookGenres(Int $book_id, string $new_genres_str) {
         $relations = BookGenreRelations::where('book_id',$book_id)->get();
-        $relations->delete();
+        foreach ($relations as $relation)
+            $relation->delete();
 
         self::setBookGenres($book_id,$new_genres_str);
     }

@@ -6,42 +6,41 @@ use App\Models\Book;
 use App\Models\BookGenreRelations;
 use App\Models\Genre;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
-use SQLiteException;
+use Illuminate\Support\Facades\Log;
+use Spatie\QueryBuilder\QueryBuilder;
 use Throwable;
 
 class BookController extends Controller
 {
-    protected $rules = [
-        'title' => 'string',
-        'pub_type' => 'string|in:graphical,digital,printed',
-        'genre' => 'string',
-        ];
 
-    public function index() {
+    public function index(Request $request) {
 
-        $books = Book::all();
 
-        $genres_array = [];
-        $authors = [];
+        $genres_all = Genre::all();
+        $authors_all = User::all();
 
-        foreach ($books as $book) {
-            $genres = '';
-            $relations = BookGenreRelations::where('book_id', $book->id)->get();
 
-            foreach ($relations as $relation) {
-                $genres .= Genre::find($relation->genre_id)->name . ", ";
-            }
 
-            $authors[] = User::find($book->user_id)->name;
+        if ($request->all()) {
+            if ($request->user_id)
+                $books = Book::whereIn('user_id',$request->user_id)
+                    ->where('title','like','%'. $request->title .'%')
+                    ->whereHas('genres',function ($q) use ($request) {
+                        $q->whereIn('name', $request->check_genre);
+                    })
+                    ->get();
 
-            $genres_array[] = $genres;
+        } else {
+            $books = Book::all();
         }
 
+
         $data = [
-            'authors' => array_reverse($authors),
-            'genres' => array_reverse($genres_array),
             'books' => $books,
+            'genres_all' => $genres_all,
+            'authors_all' => $authors_all,
         ];
 
         return view('book.index',compact('data'));
@@ -65,17 +64,18 @@ class BookController extends Controller
 
     }
 
-    public function delete(Request $request) {
+    public function destroy(Request $request) {
 
         $book = Book::find($request->id);
 
+        Log::info('Deleting book with id: '.$book->id.' and title '.$book->title);
         $book->delete();
-
+        Log::info('Book was deleted');
         return redirect()->route('book.index');
     }
 
     public function store(Request $request) {
-        if ($this->validate($request,$this->rules)) {
+        if ($request->validated()) {
 
             try {
                 $book = Book::create([
@@ -86,7 +86,8 @@ class BookController extends Controller
 
                 GenreController::setBookGenres($book->id, $request->genre);
 
-            } catch (SQLiteException $e) {
+                Log::info('Created book with id: '.$book->id.' and title '.$book->title);
+            } catch (Throwable $e) {
                 report($e);
             }
             return redirect()->route('book.index');
@@ -96,10 +97,11 @@ class BookController extends Controller
     }
 
     public function storeUpdates(Request $request) {
-        if ($this->validate($request, $this->rules)) {
+        if ($request->validated()) {
 
             try {
                 $book = Book::find($request->id);
+                Log::info('Updating books data with id: '.$book->id.' and title '.$book->title);
                 $book->update([
                     'title' => $request->title,
                     'pub_type' => $request->pub_type,
@@ -107,8 +109,8 @@ class BookController extends Controller
 
 
                 GenreController::updateBookGenres($book->id, $request->genre);
-
-            } catch (SQLiteException $e) {
+                Log::info('Updated book with id: '.$book->id.' and title '.$book->title);
+            } catch (Throwable $e) {
                 report($e);
             }
             return redirect()->route('book.index');
