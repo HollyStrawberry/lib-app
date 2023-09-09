@@ -3,6 +3,8 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
+                <!-- TODO: Make filtering good -->
+                <!-- Search and filters -->
                     <form class="justify-center" method="GET" action="{{route('book.index')}}">
                         <div class="row mb-3">
                             <label for="search" class="col-md-4 col-form-label text-md-end">Поиск</label>
@@ -23,6 +25,7 @@
                         <p></p>
                         <input type="submit" name="submit" id="submit">
                 </form>
+    <!-- Books list -->
     @foreach($data['books'] as $book)
         <div class="card">
             <div class="card-header">
@@ -39,25 +42,20 @@
                 @endforeach
                 <p>Издание: {{ $book->pub_type }}
                 <p>Дата: {{ $book->created_at }}
-                @auth()
-                    @if(auth()->id() == $book->user_id)
+                <!-- Delete and edit buttons -->
                 <form method="GET" id="edit" action="{{ route('book.edit') }}" align="right">
                     <button id="button_update" type="submit" name="id" value="{{ $book->id }}">Редактировать</button>
                 </form>
+
                 <form method="POST" id="delete" align="right" action="{{ route('book.delete', ['book' => $book]) }}">
                     @method('DELETE')
                     @csrf
                     <button id="button_delete" type="submit" name="delete" value="{{ $book->id }}">Удалить</button>
                 </form>
-                    @endif
-                @endauth
             </div>
         </div>
     @endforeach
             </div>
         </div>
-    </div>
-    <div>
-
     </div>
 @endsection

@@ -4,24 +4,20 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BookRequest;
+use App\Http\Resources\BookCollection;
+use App\Http\Resources\BookResource;
 use App\Models\Book;
 
 class BookApiController extends Controller
 {
     public function index()
     {
-        return Book::all();
-    }
-
-    public function store(BookRequest $request)
-    {
-        $day = Book::create($request->validated());
-        return $day;
+        return new BookCollection(Book::paginate());
     }
 
     public function show($id)
     {
-        return $book = Book::findOrFail($id);
+        return new BookResource(Book::findOrFail($id));
     }
 
     public function update(BookRequest $request, $id)

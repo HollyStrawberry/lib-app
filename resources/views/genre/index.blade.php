@@ -15,9 +15,6 @@
                     </div>
                 </div>
     @endforeach
-                <div class="card">
-                    <div class="card-header"><a href="{{ route('genre.create') }}">Добавить жанр</a></div>
-                </div>
             </div>
         </div>
     </div>

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div>
+
         <form action="{{ route('genre.store') }}" method="post">
             @csrf
             <div class="row mb-3">
@@ -15,8 +16,8 @@
                     <button type="submit" class="btn btn-primary">
                         {{ __('Добавить') }}
                     </button>
-
-                    <button type="submit" class="btn btn-primary" formaction="{{ route('book.index') }}">
+                    <!-- TODO: Make active cansel button -->
+                    <button class="btn btn-primary" onclick="{{ route('/books') }}">
                         {{ __('Отмена') }}
                     </button>
                 </div>

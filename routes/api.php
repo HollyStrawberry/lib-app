@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\API\BookApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,10 +14,24 @@ use \App\Http\Controllers\API\BookApiController;
 |
 */
 
-Route::apiResource('/books','App\Http\Controllers\API\BookApiController');
+Route::group(['middleware' => 'auth:sanctum', 'namespace' => 'API'], function () {
+    Route::put('/books/{book}',[App\Http\Controllers\API\BookApiController::class,'update']);
+    Route::delete('/books/{book}',[App\Http\Controllers\API\BookApiController::class,'destroy']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+    Route::put('/users/',[App\Http\Controllers\API\UserApiController::class,'update']);
 });
+
+Route::get('/books',[App\Http\Controllers\API\BookApiController::class,'index']);
+Route::get('/books/{book}',[App\Http\Controllers\API\BookApiController::class,'show']);
+
+Route::get('/users',[App\Http\Controllers\API\UserApiController::class,'index']);
+Route::get('/users/{user}',[App\Http\Controllers\API\UserApiController::class,'show']);
+
+Route::get('/genres',[App\Http\Controllers\API\GenreApiController::class,'index']);
+
+
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
 
 

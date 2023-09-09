@@ -16,7 +16,7 @@
                     <button type="submit" class="btn btn-primary">
                         {{ __('Обновить') }}
                     </button>
-
+                    <!-- TODO: Make active cansel button -->
                     <button type="submit" class="btn btn-primary" formaction="{{ route('book.index') }}">
                         {{ __('Отмена') }}
                     </button>

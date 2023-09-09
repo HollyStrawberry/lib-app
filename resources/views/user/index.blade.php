@@ -9,9 +9,18 @@
                         <div class="card-body">
                             Книги: {{ array_pop($books_counts) }}
                         </div>
+                        <!-- Delete and edit buttons -->
+                        <form method="GET" id="edit" action="{{ route('user.edit', ['user' => $user]) }}" align="right">
+                            <button id="button_update" type="submit" name="id" value="{{ $user->id }}">Редактировать</button>
+                        </form>
+
+                        <form method="POST" id="delete" align="right" action="{{ route('user.delete', ['user' => $user]) }}">
+                            @method('DELETE')
+                            @csrf
+                            <button id="button_delete" type="submit" name="delete" value="{{ $user->id }}">Удалить</button>
+                        </form>
                     </div>
             @endforeach
-                    <a href="{{ route('user.create') }}">Добавить автора</a>
                 </div>
             </div>
         </div>

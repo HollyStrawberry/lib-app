@@ -21,7 +21,7 @@ class GenreController extends Controller
         'name' => 'string'
     ];
 
-    public function index(): View
+    public function index()
     {
         $genres = Genre::all();
 
@@ -68,22 +68,6 @@ class GenreController extends Controller
         }
     }
 
-    public function getBookGenres(Int $book_id): string {
-
-        $genres = Genre::find(BookGenreRelations::where(
-                'book_id',$book_id
-            )->get('genre_id')
-        )->get();
-
-        $genres_string = '';
-
-        foreach ($genres as $genre) {
-            $genres_string .= $genre->name . ', ';
-        }
-
-        return $genres_string;
-    }
-
     public static function setBookGenres(Book $book, string $genres_str) {
         $genres = explode(',',
             preg_replace('/\s+/', '', $genres_str));
@@ -101,11 +85,7 @@ class GenreController extends Controller
 
     public static function updateBookGenres(Book $book, string $new_genres_str) {
         $book->genres()->detach();
-/*
-        foreach ($book->genres()->get() as $genre) {
-            $genre->delete();
-        }
-*/
+
         self::setBookGenres($book,$new_genres_str);
     }
 

@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\User;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
+use Illuminate\Validation\Rules;
 
 class UserController extends Controller
 {
@@ -15,7 +18,7 @@ class UserController extends Controller
      * Show a list of all of the application's users.
      */
 
-    public function index(): View
+    public function index()
     {
         $users = User::all();
 
@@ -33,42 +36,52 @@ class UserController extends Controller
         return view('user.create');
     }
 
-    public function update(Request $request) {
+    public function edit(Request $request, $id) {
 
-        $user = User::find(auth()->id());
-        $books = Book::where('user_id',auth()->id());
+        $user = User::find($id);
 
-        return view('user.update',compact('user'), compact('books'));
+        return view('user.edit',compact('user'));
     }
 
     public function store(Request $request) {
-        if($this->validate($request,$this->rules)) {
-            $book = User::create([
-                'name' => $request->name,
-                'password' => $request->password,
-            ]);
+       // dd($request->all());
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'is_admin' => [],
+        ]);
 
-            return redirect()->route('user.index');
-        } else {
-            return redirect()->route('user.create');
-        }
+        $user = User::create([
+            'name' => $request->name,
+            'password' => Hash::make($request->password),
+            'isAdmin' => $request->is_admin != null ? 1 : 0,
+        ]);
+
+        event(new Registered($user));
+
+        return redirect()->route('user.index');
     }
-    public function storeUpdates(Request $request) {
+    public function update(Request $request, $id) {
         if($this->validate($request,[
             'name' => 'string'
         ])) {
-           $user = User::find(auth()->id());
+           $user = User::find($id);
            $user->update([
                 'name' => $request->name
             ]);
         }
-        if ($request->password != null)
+        if ($request->password)
         {
-            $request->setMethod('put');
             route('password.update',$request);
         }
-        return redirect()->route('user.index');
+
+        return redirect('/');
     }
 
+    public function destroy($id) {
+        $user = User::find($id);
+        $user->delete();
+        return redirect('/users');
+    }
 
 }

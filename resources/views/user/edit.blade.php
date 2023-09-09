@@ -8,7 +8,8 @@
                 <div class="card-header">{{ __('Профиль') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('user.storeUpdates') }}">
+                    <form method="POST" action="{{ route('user.update' ,['user' => auth()->id()]) }}">
+                        @method('PUT')
                         @csrf
 
                         <div class="row mb-3">

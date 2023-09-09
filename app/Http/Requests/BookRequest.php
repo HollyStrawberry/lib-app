@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Book;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -18,10 +19,11 @@ class BookRequest extends FormRequest
         {
             case 'GET':
                 return true;
-            case 'POST':
             case 'PUT':
             case 'PATCH':
             case 'DELETE':
+                return auth()->id() == Book::find($this->book_id)->user_id;
+            case 'POST':
                 return auth()->check();
             default:
                 return false;
@@ -56,9 +58,7 @@ class BookRequest extends FormRequest
                     ] + $rules; // и берем все остальные правила
             // case 'PATCH':
             case 'DELETE':
-                return [
-                    'book_id' => 'required|integer|exists:books,id'
-                ];
+                return [];
             default:
                 return $rules;
         }

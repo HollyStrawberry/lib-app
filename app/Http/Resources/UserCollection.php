@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Requests\BookRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Collection;
 
-class BookCollection extends ResourceCollection
+class UserCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,6 +15,6 @@ class BookCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return ['data' => BookResource::collection($this),];
+        return ['data' => UserResourceBooksCounting::collection($this),];
     }
 }
