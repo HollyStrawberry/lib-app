@@ -8,6 +8,7 @@ use App\Models\Genre;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class BookController extends Controller
@@ -65,15 +66,19 @@ class BookController extends Controller
         return redirect()->route('book.index');
     }
 
-    public function store(BookRequest $request) {
+    public function store(Request $request) {
 
-        if ($request->validated()) {
+        if ($request->validate([
+            'title' => 'required|string|unique:books,title',
+            'pub_type' => 'required|in:graphical,digital,printed',
+            'user_name' => 'required|string|exists:users,name',
+        ])) {
 
             try {
                 $book = Book::create([
                     'title' => $request->title,
                     'pub_type' => $request->pub_type,
-                    'user_id' => auth()->id(),
+                    'user_id' => User::where('name',$request->user_name)->first()->id,
                 ]);
                 GenreController::setBookGenres($book, $request->genre);
 
@@ -88,14 +93,21 @@ class BookController extends Controller
         }
     }
 
-    public function update(BookRequest $request,Book $book) {
-        if ($request->validated()) {
+    public function update(Request $request,Book $book) {
 
+
+        if ($request->validate([
+            'title' => ['required','string',
+                            Rule::unique('books')->ignore($request->title, 'title')],
+            'pub_type' => 'required|in:graphical,digital,printed',
+            'user_name' => 'required|string|exists:users,name',
+        ])) {
             try {
                 Log::info('Updating books data with id: '.$book->id.' and title '.$book->title);
                 $book->update([
                     'title' => $request->title,
                     'pub_type' => $request->pub_type,
+                    'user_id' => User::where('name',$request->user_name)->first()->id,
                 ]);
 
 

@@ -23,7 +23,7 @@ Route::get('/', function () {
     return redirect()->route('book.index');
 });
 
-Route::group(['middleware' => 'auth'], function () {
+Route::group(['middleware' => 'auth:web'], function () {
 
     //Routing of books
     Route::get('/books',[BookController::class, 'index'])->name('book.index');
