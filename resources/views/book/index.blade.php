@@ -7,15 +7,15 @@
                 <!-- Search and filters -->
                     <form class="justify-center" method="GET" action="{{route('book.index')}}">
                         <div class="row mb-3">
-                            <label for="search" class="col-md-4 col-form-label text-md-end">Поиск</label>
+                            <label for="title" class="col-md-4 col-form-label text-md-end">Поиск</label>
                             <div class="col-md-6">
-                                <input type="search" class="form-control" name="title" value="{{ old('title') }}"/>
+                                <input type="search" class="form-control" id="title" name="title" value="{{ old('title') }}"/>
                             </div>
                         </div>
                         <p>Жанры</p>
                     @foreach($data['genres_all'] as $genre)
                         <label for="check_genre">{{ $genre->name }}</label>
-                        <input type="checkbox" name="check_genre[]" id="check_genre" value="{{ $genre->name }}">
+                        <input type="checkbox" name="check_genre[]" id="check_genre" value="{{ $genre->id }}">
                     @endforeach
                         <p>Авторы</p>
                     @foreach($data['authors_all'] as $author)

@@ -16,8 +16,7 @@
                     <button type="submit" class="btn btn-primary">
                         {{ __('Добавить') }}
                     </button>
-                    <!-- TODO: Make active cansel button -->
-                    <button class="btn btn-primary" onclick="{{ route('/books') }}">
+                    <button class="btn btn-primary" onclick="window.history.back(); return false;">
                         {{ __('Отмена') }}
                     </button>
                 </div>

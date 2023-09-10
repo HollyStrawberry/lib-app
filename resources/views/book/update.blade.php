@@ -46,8 +46,7 @@
                     <button type="submit" class="btn btn-primary" name="id" value="{{ $book->id }}">
                         {{ __('Обновить') }}
                     </button>
-                    <!-- TODO: Make active cansel button -->
-                    <button type="submit" class="btn btn-primary" formaction="{{ route('book.index') }}">
+                    <button type="submit" class="btn btn-primary" onclick="window.history.back(); return false;">
                         {{ __('Отмена') }}
                     </button>
                 </div>
