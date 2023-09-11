@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Профиль') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('user.update' ,['user' => auth()->id()]) }}">
+                    <form method="POST" action="{{ route('user.update' ,['user' => $user->id]) }}">
                         @method('PUT')
                         @csrf
 
