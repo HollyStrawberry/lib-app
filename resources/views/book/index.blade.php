@@ -3,7 +3,6 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <!-- TODO: Make filtering good -->
                 <!-- Search and filters -->
                     <form class="justify-center" method="GET" action="{{route('book.index')}}">
                         <div class="row mb-3">
@@ -19,7 +18,7 @@
                     @endforeach
                         <p>Авторы</p>
                     @foreach($data['authors_all'] as $author)
-                        <label for="check_author">{{ $author->name }}</label>
+                        <label for="user_id">{{ $author->name }}</label>
                         <input type="checkbox" name="user_id[]" id="user_id" value="{{ $author->id }}">
                     @endforeach
                         <p></p>

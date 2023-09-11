@@ -5,7 +5,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">{{ __('Register') }}</div>
+                    <div class="card-header">{{ __('Регистрация пользователя') }}</div>
 
                     <div class="card-body">
                         <form method="POST" action="{{ route('user.store') }}">
@@ -44,19 +44,6 @@
 
                                 <div class="col-md-6">
                                     <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
-                                </div>
-                            </div>
-
-                            <div class="row mb-3 ">
-                                <div class="customCheckBoxHolder ">
-
-                                    <input type="checkbox" id="cCB1" name="is_admin" class="customCheckBoxInput ">
-                                    <label for="cCB1" class="customCheckBoxWrapper">
-                                        <div class="customCheckBox">
-                                            <div class="inner">{{ __('Администратор') }}</div>
-                                        </div>
-                                    </label>
-
                                 </div>
                             </div>
 
