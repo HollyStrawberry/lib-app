@@ -2,14 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
 use Illuminate\Validation\Rules;
 
 class UserController extends Controller
@@ -62,25 +59,34 @@ class UserController extends Controller
         return redirect()->route('user.index');
     }
     public function update(Request $request, $id) {
-        if($this->validate($request,[
+        $request->validate([
             'name' => 'string'
-        ])) {
-           $user = User::find($id);
-           $user->update([
-                'name' => $request->name
-            ]);
-        }
+        ]);
+
+       $user = User::find($id);
+       $user->update([
+            'name' => $request->name
+        ]);
+
         if ($request->password)
         {
-            route('password.update',$request);
+
+            $request->validate([
+                'password' => 'required|confirmed',
+            ]);
+
+            $user->update([
+                'password' => Hash::make($request->password),
+            ]);
         }
 
-        return redirect('/');
+        return redirect()->route('user.index');
     }
 
     public function destroy($id) {
         $user = User::find($id);
-        $user->delete();
+        if ($user->books->all() == [])
+            $user->delete();
         return redirect('/users');
     }
 
