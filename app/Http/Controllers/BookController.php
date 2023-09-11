@@ -19,22 +19,22 @@ class BookController extends Controller
 
         $genres_all = Genre::all();
         $authors_all = User::all();
+        $books = Book::all();
 
-
-
+        // Filtering block
         if ($request->all()) {
             if ($request->user_id)
-                $books = Book::whereIn('user_id',$request->user_id)
-                    ->where('title','like','%'. $request->title .'%')
-                    ->whereHas('genres',function ($q) use ($request) {
-                        $q->whereIn('name', $request->check_genre);
-                    })
-                    ->get();
-
-        } else {
-            $books = Book::all();
+                $books = $books->whereIn('user_id',$request->user_id);
+            if ($request->title) {
+                $books = $books->filter(function ($value) use ($request) {
+                    return false !== stristr($value->title, $request->title);
+                });
+            }
+            if ($request->check_genre)
+                $books = $books->filter(function ($value) use ($request) { // Filtering books by genres
+                    return $value->genres->find($request->check_genre)->all() !== [];
+                })->values();
         }
-
 
         $data = [
             'books' => $books,
